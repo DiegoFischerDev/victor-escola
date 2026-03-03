@@ -24,6 +24,13 @@ jobs:
           script: |
             set -e
 
+            # Ativar Node via NVM (caso esteja instalado)
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+              nvm use 20 || nvm install 20
+            fi
+
             # Caminho onde o código está/clonado na VPS
             APP_PATH="${{ secrets.VPS_APP_PATH }}"
 
@@ -37,18 +44,26 @@ jobs:
 
             # Build Next.js (web)
             cd web
-            npm install --production=false
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --production=false
+            fi
             npm run build
 
             # Build Sanity Studio
             cd ../sanity
-            npm install --production=false
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --production=false
+            fi
             npm run build
 
             # Reiniciar processos com PM2 (ajuste os nomes conforme configurar na VPS)
             if command -v pm2 >/dev/null 2>&1; then
-              pm2 restart web || pm2 start "npm" --name "web" -- start --prefix "$APP_PATH/web"
-              pm2 restart sanity || pm2 start "npm" --name "sanity" -- start --prefix "$APP_PATH/sanity"
+              pm2 restart victor-web || pm2 start "npm" --name "victor-web" -- start --prefix "$APP_PATH/web"
+              pm2 restart victor-sanity || pm2 start "npm" --name "victor-sanity" -- start --prefix "$APP_PATH/sanity"
               pm2 save
             else
               echo "PM2 não encontrado. Configure o gerenciador de processos manualmente."
