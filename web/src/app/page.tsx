@@ -25,6 +25,9 @@ type HomePageData = {
     heroImage?: {
       url?: string;
     };
+    heroVideo?: {
+      url?: string;
+    };
   };
   about?: {
     title?: string;
@@ -104,7 +107,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-slate-900">
       {/* Header fixo com paleta verde/bege inspirada no site modelo */}
-      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#8dc044] text-white shadow-sm">
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#8bc53f] text-white shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:max-w-7xl lg:px-12">
           {/* Marca */}
           <div className="flex items-center gap-3">
@@ -125,7 +128,7 @@ export default async function Home() {
           <nav className="hidden items-center gap-4 text-[12px] font-medium uppercase tracking-[0.12em] sm:flex">
             <Link
               href="#hero"
-              className="rounded-full bg-[#cbbba0] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b]"
+              className="rounded-full bg-[#e9a52e] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b]"
             >
               Início
             </Link>
@@ -156,7 +159,7 @@ export default async function Home() {
           <div className="hidden sm:flex">
             <Button
               asChild
-              className="rounded-full border-0 bg-[#cbbba0] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b] hover:bg-[#afa085]"
+              className="rounded-full border-0 bg-[#e9a52e] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b] hover:bg-[#d18f1f]"
             >
               <Link href="#contact">Agende uma visita</Link>
             </Button>
@@ -164,173 +167,254 @@ export default async function Home() {
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 pb-16 pt-8 sm:px-8 lg:max-w-7xl lg:px-12">
-        {/* Hero tipo “page title” com imagem de fundo clara e textos escuros */}
-        {hero && (
-          <section
-            id="hero"
-            className="relative overflow-hidden rounded-3xl border border-black/5 bg-white/40 text-slate-900"
-          >
-            {hero.heroImage?.url && (
-              <div className="pointer-events-none absolute inset-0 -z-10">
-                <Image
-                  src={hero.heroImage.url}
-                  alt={hero.title ?? "Imagem da escola"}
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="object-cover object-center"
-                />
-              </div>
-            )}
-
-            <div className="relative px-6 py-16 sm:px-10 md:px-16">
-              <div className="max-w-3xl">
-                {hero.eyebrow && (
-                  <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-[#cbbba0]">
-                    {hero.eyebrow}
-                  </p>
-                )}
-                {hero.title && (
-                  <h1 className="text-3xl font-normal tracking-[0.05em] text-slate-900 sm:text-4xl lg:text-[44px] lg:leading-[1.2]">
-                    {hero.title}
-                  </h1>
-                )}
-                {hero.subtitle && (
-                  <p className="mt-3 text-sm leading-relaxed text-slate-800 sm:text-base">
-                    {hero.subtitle}
-                  </p>
-                )}
-
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  {hero.primaryCtaLabel && hero.primaryCtaHref && (
-                    <Button
-                      asChild
-                      className="rounded-none bg-[#cbbba0] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#3b3b3b] hover:bg-[#afa085]"
-                    >
-                      <Link href={hero.primaryCtaHref}>
-                        {hero.primaryCtaLabel}
-                      </Link>
-                    </Button>
-                  )}
-                  {hero.secondaryCtaLabel && hero.secondaryCtaHref && (
-                    <Button
-                      asChild
-                      variant="secondary"
-                      className="rounded-none border border-slate-800/60 bg-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-900 hover:bg-black/5"
-                    >
-                      <Link href={hero.secondaryCtaHref}>
-                        {hero.secondaryCtaLabel}
-                      </Link>
-                    </Button>
-                  )}
-                </div>
-              </div>
+      {/* Hero full-bleed, com vídeo do Sanity se disponível */}
+      {hero && (
+        <section
+          id="hero"
+          className="relative w-full overflow-hidden bg-slate-900 text-white"
+        >
+          {/* Fundo de vídeo vindo do Sanity, com fallback para imagem */}
+          {hero.heroVideo?.url ? (
+            <div className="pointer-events-none absolute inset-0 z-0">
+              <video
+                className="h-full w-full object-cover"
+                src={hero.heroVideo.url}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
             </div>
-          </section>
-        )}
+          ) : hero.heroImage?.url ? (
+            <div className="pointer-events-none absolute inset-0 z-0">
+              <Image
+                src={hero.heroImage.url}
+                alt={hero.title ?? "Imagem da escola"}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-center"
+              />
+            </div>
+          ) : null}
+
+          {/* Overlay em gradiente para garantir contraste do texto */}
+          <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-black/70 via-black/55 to-black/30" />
+
+          <div className="relative z-10 mx-auto flex min-h-[360px] max-w-6xl flex-col justify-center px-4 py-16 sm:px-8 md:px-12 lg:min-h-[440px] lg:px-12 lg:py-20">
+            <div className="max-w-3xl space-y-4">
+              {hero.eyebrow && (
+                <p className="text-xs font-medium uppercase tracking-[0.25em] text-[#e9a52e]">
+                  {hero.eyebrow}
+                </p>
+              )}
+              {hero.title && (
+                <h1 className="text-3xl font-semibold tracking-[0.04em] text-white sm:text-4xl lg:text-[46px] lg:leading-[1.15]">
+                  {hero.title}
+                </h1>
+              )}
+              {hero.subtitle && (
+                <p className="mt-2 text-sm leading-relaxed text-slate-100/90 sm:text-base">
+                  {hero.subtitle}
+                </p>
+              )}
+
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                {hero.primaryCtaLabel && hero.primaryCtaHref && (
+                  <Button
+                    asChild
+                    className="rounded-none bg-[#e9a52e] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#3b3b3b] hover:bg-[#d18f1f]"
+                  >
+                    <Link href={hero.primaryCtaHref}>
+                      {hero.primaryCtaLabel}
+                    </Link>
+                  </Button>
+                )}
+                {hero.secondaryCtaLabel && hero.secondaryCtaHref && (
+                  <Button
+                    asChild
+                    variant="secondary"
+                    className="rounded-none border border-white/80 bg-white/15 px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-white hover:bg-white/25"
+                  >
+                    <Link href={hero.secondaryCtaHref}>
+                      {hero.secondaryCtaLabel}
+                    </Link>
+                  </Button>
+                )}
+              </div>
+
+              {hero.highlights && hero.highlights.length > 0 && (
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {hero.highlights
+                    .filter((h) => h?.label)
+                    .map((h, idx) => (
+                      <span
+                        key={idx}
+                        className="rounded-full bg-black/40 px-3 py-1 text-[11px] font-medium text-slate-100 ring-1 ring-white/10"
+                      >
+                        {h?.label}
+                      </span>
+                    ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 pb-16 pt-8 sm:px-8 lg:max-w-7xl lg:px-12">
 
         {/* Sobre */}
         {about && (
           <section
             id="about"
-            className="grid gap-10 rounded-3xl bg-slate-50 px-6 py-8 shadow-sm ring-1 ring-slate-100 md:grid-cols-[1.4fr,1.6fr] sm:px-8 lg:px-10"
+            className="rounded-3xl bg-white/90 px-4 py-10 shadow-sm ring-1 ring-black/5 sm:px-6 lg:px-10"
           >
-            <div className="space-y-4">
-              <SectionHeader title={about.title} subtitle={about.subtitle} />
-              <div className="mt-4 space-y-2 text-sm text-slate-700">
-                {about.mission && (
-                  <p>
-                    <span className="font-semibold">Missão: </span>
-                    {about.mission}
-                  </p>
+            <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1.5fr,1.7fr] md:items-center">
+              {/* Coluna da imagem */}
+              <div className="space-y-4">
+                {about.image?.url && (
+                  <div className="relative h-60 w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm sm:h-72 lg:h-80">
+                    <Image
+                      src={about.image.url}
+                      alt={about.title ?? "Sobre a escola"}
+                      fill
+                      sizes="(min-width: 1024px) 520px, 100vw"
+                      className="object-cover object-center"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                    <div className="absolute left-5 bottom-5 rounded-full bg-black/55 px-4 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-50">
+                      Escola em movimento
+                    </div>
+                  </div>
                 )}
-                {about.vision && (
-                  <p>
-                    <span className="font-semibold">Visão: </span>
-                    {about.vision}
-                  </p>
-                )}
-                {about.values && about.values.length > 0 && (
-                  <p>
-                    <span className="font-semibold">Valores: </span>
-                    {about.values.join(" · ")}
-                  </p>
+
+                {about.highlightStats && about.highlightStats.length > 0 && (
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                    {about.highlightStats.map((stat, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-2xl bg-[#f5f5f5] px-4 py-3 text-left"
+                      >
+                        <p className="text-xl font-semibold text-[#8bc53f]">
+                          {stat.value}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-600">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
-            </div>
-            <div className="space-y-6">
-              {/* Imagem da seção sobre */}
-              {about.image?.url && (
-                <div className="relative h-56 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm sm:h-64">
-                  <Image
-                    src={about.image.url}
-                    alt={about.title ?? "Sobre a escola"}
-                    fill
-                    sizes="(min-width: 1024px) 420px, 100vw"
-                    className="object-cover object-center"
-                  />
-                </div>
-              )}
-              {about.highlightStats && about.highlightStats.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-3">
-                  {about.highlightStats.map((stat, idx) => (
-                    <div key={idx} className="space-y-1">
-                      <p className="text-xl font-semibold text-blue-600">
-                        {stat.value}
+
+              {/* Coluna de texto */}
+              <div className="space-y-5">
+                <SectionHeader
+                  title={about.title}
+                  subtitle={about.subtitle}
+                />
+
+                <div className="grid gap-4 text-sm text-slate-700 sm:grid-cols-2">
+                  {about.mission && (
+                    <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1c75bb]">
+                        Missão
                       </p>
-                      <p className="text-xs text-slate-600">{stat.label}</p>
+                      <p className="mt-2">{about.mission}</p>
                     </div>
-                  ))}
+                  )}
+                  {about.vision && (
+                    <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#e9a52e]">
+                        Visão
+                      </p>
+                      <p className="mt-2">{about.vision}</p>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {about.values && about.values.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Valores que nos guiam
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {about.values.map((value, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-700"
+                        >
+                          {value}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </section>
         )}
 
-        {/* Segmentos – grade de ciclos inspirada na seção “Ensino” */}
+        {/* Segmentos – cards de ciclos com design institucional */}
         {segments && (
-          <section id="segments" className="rounded-3xl bg-white/90 px-4 py-10 shadow-sm ring-1 ring-black/5 sm:px-6">
-            <div className="mx-auto max-w-5xl">
+          <section
+            id="segments"
+            className="rounded-3xl bg-white/90 px-4 py-10 shadow-sm ring-1 ring-black/5 sm:px-6"
+          >
+            <div className="mx-auto max-w-5xl space-y-8">
               <SectionHeader
                 title={segments.title}
                 subtitle={segments.subtitle}
               />
 
-              <div className="mt-10 flex flex-wrap justify-center gap-8">
-                {/* colunas centrais com segmentos */}
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {segments.segments?.map((segment, idx) => (
-                  <div
+                  <Card
                     key={idx}
-                    className="flex w-full max-w-xs flex-col items-center text-center sm:w-1/2 lg:w-1/5"
+                    className="flex h-full flex-col gap-4 border-none bg-white px-5 py-5 shadow-sm ring-1 ring-slate-100"
                   >
-                    {segment.icon?.url && (
-                      <div className="mb-4 h-16 w-16">
-                        <Image
-                          src={segment.icon.url}
-                          alt={segment.name ?? "Segmento"}
-                          width={64}
-                          height={64}
-                          className="mx-auto h-full w-full object-contain"
-                        />
+                    <div className="flex items-start gap-4">
+                      {segment.icon?.url && (
+                        <div className="relative mt-1 h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-[#f0f7e6] ring-1 ring-[#8bc53f]/30">
+                          <Image
+                            src={segment.icon.url}
+                            alt={segment.name ?? "Segmento"}
+                            fill
+                            sizes="48px"
+                            className="object-contain p-2"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-1">
+                        {segment.ageRange && (
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            {segment.ageRange}
+                          </p>
+                        )}
+                        <h3 className="text-base font-semibold text-slate-900">
+                          {segment.name}
+                        </h3>
                       </div>
-                    )}
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8dc044]">
-                      {segment.name}
-                    </h3>
+                    </div>
+
                     {segment.description && (
-                      <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                      <p className="text-sm leading-relaxed text-slate-700">
                         {segment.description}
                       </p>
                     )}
+
                     {segment.highlights && segment.highlights.length > 0 && (
-                      <ul className="mt-2 space-y-1 text-xs text-slate-600">
+                      <ul className="mt-1 space-y-1 text-xs text-slate-600">
                         {segment.highlights.map((h, i) => (
-                          <li key={i}>{h}</li>
+                          <li key={i} className="flex gap-2">
+                            <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-[#8bc53f]" />
+                            <span>{h}</span>
+                          </li>
                         ))}
                       </ul>
                     )}
-                  </div>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -341,33 +425,33 @@ export default async function Home() {
         {differentiators && (
           <section
             id="differentials"
-            className="space-y-6 rounded-3xl bg-slate-900 px-6 py-8 text-slate-50 shadow-sm sm:px-8 lg:px-10"
+            className="space-y-6 rounded-3xl bg-white/90 px-6 py-8 shadow-sm ring-1 ring-black/5 sm:px-8 lg:px-10"
           >
             {differentiators.title && (
-              <h2 className="text-2xl sm:text-3xl font-semibold">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
                 {differentiators.title}
               </h2>
             )}
             {differentiators.subtitle && (
-              <p className="max-w-2xl text-sm sm:text-base text-slate-200/80">
+              <p className="max-w-2xl text-sm sm:text-base text-slate-600">
                 {differentiators.subtitle}
               </p>
             )}
             <div className="grid gap-6 md:grid-cols-2">
               {differentiators.items?.map((item, idx) => (
-                <div
+                <Card
                   key={idx}
-                  className="rounded-2xl border border-slate-700/80 bg-slate-900/40 p-5 shadow-sm backdrop-blur-sm"
+                  className="border-none bg-white p-5 shadow-sm ring-1 ring-slate-100"
                 >
-                  <h3 className="text-base sm:text-lg font-semibold text-slate-50">
+                  <h3 className="text-base sm:text-lg font-semibold text-slate-900">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="mt-2 text-sm text-slate-200/80">
+                    <p className="mt-2 text-sm text-slate-700">
                       {item.description}
                     </p>
                   )}
-                </div>
+                </Card>
               ))}
             </div>
           </section>
@@ -480,8 +564,8 @@ export default async function Home() {
 
         {/* Contato */}
         {contact && (
-          <section className="grid gap-10 border-t border-slate-200 pt-10 md:grid-cols-[2fr,3fr]">
-            <div className="space-y-4">
+          <section className="grid gap-10 border-t border-slate-200 pt-10 md:grid-cols-[1.4fr,1.6fr]">
+            <div className="space-y-6">
               {contact.title && (
                 <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
                   {contact.title}
@@ -492,49 +576,72 @@ export default async function Home() {
                   {contact.subtitle}
                 </p>
               )}
-              <div className="mt-4 space-y-2 text-sm text-slate-700">
-                {contact.phone && (
-                  <p>
-                    <span className="font-semibold">Telefone: </span>
-                    {contact.phone}
-                  </p>
-                )}
-                {contact.whatsapp && (
-                  <p>
-                    <span className="font-semibold">WhatsApp: </span>
-                    {contact.whatsapp}
-                  </p>
-                )}
-                {contact.email && (
-                  <p>
-                    <span className="font-semibold">E-mail: </span>
-                    {contact.email}
-                  </p>
-                )}
-                {contact.address && (
-                  <p>
-                    <span className="font-semibold">Endereço: </span>
-                    {contact.address}
-                  </p>
-                )}
-                {contact.openingHours && (
-                  <p>
-                    <span className="font-semibold">Atendimento: </span>
-                    {contact.openingHours}
-                  </p>
+
+              <div className="grid gap-4 md:grid-cols-2 md:items-start">
+                {/* Bloco de informações */}
+                <div className="space-y-3 text-sm text-slate-700">
+                  <div className="space-y-2">
+                    {contact.phone && (
+                      <p>
+                        <span className="font-semibold">Telefone: </span>
+                        {contact.phone}
+                      </p>
+                    )}
+                    {contact.whatsapp && (
+                      <p>
+                        <span className="font-semibold">WhatsApp: </span>
+                        {contact.whatsapp}
+                      </p>
+                    )}
+                    {contact.email && (
+                      <p>
+                        <span className="font-semibold">E-mail: </span>
+                        {contact.email}
+                      </p>
+                    )}
+                    {contact.address && (
+                      <p>
+                        <span className="font-semibold">Endereço: </span>
+                        {contact.address}
+                      </p>
+                    )}
+                    {contact.openingHours && (
+                      <p>
+                        <span className="font-semibold">Atendimento: </span>
+                        {contact.openingHours}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bloco do mapa ao lado das informações */}
+                {contact.mapsUrl && (
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      Localização
+                    </p>
+                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/5 shadow-sm transition hover:bg-slate-900/10">
+                      <iframe
+                        src={contact.mapsUrl}
+                        title="Localização no mapa"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        className="h-44 w-full border-0 opacity-80 transition hover:opacity-100"
+                        allowFullScreen
+                      />
+                    </div>
+                    <Link
+                      href={contact.mapsUrl}
+                      target="_blank"
+                      className="inline-flex text-xs font-medium text-[#1c75bb] hover:text-[#155a8c]"
+                    >
+                      Ver no Google Maps
+                    </Link>
+                  </div>
                 )}
               </div>
-              {contact.mapsUrl && (
-                <Link
-                  href={contact.mapsUrl}
-                  target="_blank"
-                  className="inline-flex text-sm font-medium text-blue-600 hover:text-blue-700"
-                >
-                  Ver no mapa
-                </Link>
-              )}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 md:ml-auto md:max-w-md">
               {contact.formIntro && (
                 <p className="text-sm text-slate-600">{contact.formIntro}</p>
               )}
@@ -594,6 +701,71 @@ export default async function Home() {
         )}
 
       </main>
+
+      {/* Footer com dados vindos do Sanity (contato) */}
+      <footer className="mt-8 border-t border-black/5 bg-[#171717] text-slate-200">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 sm:px-8 lg:max-w-7xl lg:flex-row lg:items-start lg:justify-between lg:px-12">
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold tracking-[0.16em] text-[#8bc53f]">
+              COLÉGIO HORIZONTE
+            </h3>
+            {contact?.address && (
+              <p className="text-sm text-slate-300">
+                {contact.address}
+              </p>
+            )}
+            <div className="space-y-1 text-sm text-slate-300">
+              {contact?.phone && <p>Tel.: {contact.phone}</p>}
+              {contact?.email && <p>E-mail: {contact.email}</p>}
+              {contact?.openingHours && (
+                <p>Atendimento: {contact.openingHours}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3 text-sm text-slate-300">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+              Navegação
+            </p>
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
+              <Link href="#about" className="hover:text-white">
+                Sobre
+              </Link>
+              <Link href="#segments" className="hover:text-white">
+                Ensino
+              </Link>
+              <Link href="#differentials" className="hover:text-white">
+                Projetos
+              </Link>
+              <Link href="#structure" className="hover:text-white">
+                Estrutura
+              </Link>
+              <Link href="#contact" className="hover:text-white">
+                Contacto
+              </Link>
+            </nav>
+          </div>
+        </div>
+
+        <div className="border-t border-white/5">
+          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-4 text-[11px] text-slate-500 sm:flex-row sm:px-8 lg:max-w-7xl lg:px-12">
+            <p>
+              © {new Date().getFullYear()} Colégio Horizonte. Todos os direitos
+              reservados.
+            </p>
+            <p className="text-[11px] text-slate-500">
+              Desenvolvido por{" "}
+              <Link
+                href="https://wa.me/351935315116"
+                target="_blank"
+                className="font-medium text-slate-300 hover:text-white"
+              >
+                Victor Candido
+              </Link>
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

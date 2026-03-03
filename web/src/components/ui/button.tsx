@@ -11,12 +11,15 @@ type ButtonProps = {
 function getVariantClasses(variant: Variant) {
   switch (variant) {
     case "secondary":
+      // Fundo claro com texto escuro
       return "border border-slate-300 bg-white text-slate-900 hover:bg-slate-50";
     case "ghost":
+      // Só texto com leve hover
       return "border border-transparent bg-transparent text-slate-700 hover:bg-slate-50";
     case "primary":
     default:
-      return "border border-[#8dc044] bg-[#8dc044] text-white hover:bg-[#007f3e]";
+      // Verde principal da marca
+      return "border border-[#8bc53f] bg-[#8bc53f] text-white hover:bg-[#6da12f]";
   }
 }
 
@@ -30,7 +33,7 @@ export function Button(props: ButtonProps) {
   } = props;
 
   const baseClasses =
-    "inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8dc044] focus-visible:ring-offset-2";
+    "inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8bc53f] focus-visible:ring-offset-2";
 
   const combined = `${baseClasses} ${getVariantClasses(variant)} ${className}`.trim();
 

@@ -56,6 +56,16 @@ export default defineType({
       options: {hotspot: true},
     }),
     defineField({
+      name: 'heroVideo',
+      title: 'Vídeo da seção (7–10s, sem áudio)',
+      type: 'file',
+      options: {
+        accept: 'video/*',
+      },
+      description:
+        'Suba aqui um vídeo curto em loop para o fundo da hero. Se vazio, será usada apenas a imagem.',
+    }),
+    defineField({
       name: 'highlights',
       title: 'Destaques rápidos (3–4 itens)',
       type: 'array',

@@ -18,6 +18,9 @@ export const homePageQuery = `
     },
     heroImage{
       "url": asset->url
+    },
+    heroVideo{
+      "url": asset->url
     }
   },
   about->{

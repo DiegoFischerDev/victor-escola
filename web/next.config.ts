@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+    // Evita problemas de resolução para IP privado em ambiente local
+    unoptimized: process.env.NODE_ENV === "development",
   },
 };
 
