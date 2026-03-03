@@ -1,0 +1,55 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            set -e
+
+            # Caminho onde o código está/clonado na VPS
+            APP_PATH="${{ secrets.VPS_APP_PATH }}"
+
+            if [ ! -d "$APP_PATH/.git" ]; then
+              echo "Primeiro deploy: clonando repositório..."
+              git clone ${{ secrets.REPO_SSH_URL }} "$APP_PATH"
+            fi
+
+            cd "$APP_PATH"
+            git pull origin $(git symbolic-ref --short HEAD || echo main)
+
+            # Build Next.js (web)
+            cd web
+            npm install --production=false
+            npm run build
+
+            # Build Sanity Studio
+            cd ../sanity
+            npm install --production=false
+            npm run build
+
+            # Reiniciar processos com PM2 (ajuste os nomes conforme configurar na VPS)
+            if command -v pm2 >/dev/null 2>&1; then
+              pm2 restart web || pm2 start "npm" --name "web" -- start --prefix "$APP_PATH/web"
+              pm2 restart sanity || pm2 start "npm" --name "sanity" -- start --prefix "$APP_PATH/sanity"
+              pm2 save
+            else
+              echo "PM2 não encontrado. Configure o gerenciador de processos manualmente."
+
