@@ -483,15 +483,6 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Debug simples de dados vindos do Sanity */}
-        <section className="mt-10 rounded-2xl bg-slate-900 px-4 py-3 text-[10px] text-slate-200">
-          <p className="mb-1 font-semibold text-emerald-300">
-            Debug Sanity (provisório) – dados da Página Inicial:
-          </p>
-          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-all">
-            {JSON.stringify(data, null, 2)}
-          </pre>
-        </section>
       </main>
     </div>
   );
