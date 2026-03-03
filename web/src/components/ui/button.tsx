@@ -35,8 +35,9 @@ export function Button(props: ButtonProps) {
   const combined = `${baseClasses} ${getVariantClasses(variant)} ${className}`.trim();
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
-      className: `${combined} ${children.props.className ?? ""}`.trim(),
+    const child = children as React.ReactElement<{ className?: string }>;
+    return React.cloneElement(child, {
+      className: `${combined} ${child.props.className ?? ""}`.trim(),
     });
   }
 
