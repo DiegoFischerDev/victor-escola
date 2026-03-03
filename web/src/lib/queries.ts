@@ -15,6 +15,9 @@ export const homePageQuery = `
     secondaryCtaHref,
     highlights[] {
       label
+    },
+    heroImage{
+      "url": asset->url
     }
   },
   about->{

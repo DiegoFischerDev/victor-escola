@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { sanityClient } from "../lib/sanityClient";
 import { homePageQuery } from "../lib/queries";
 
@@ -17,6 +18,9 @@ type HomePageData = {
     secondaryCtaLabel?: string;
     secondaryCtaHref?: string;
     highlights?: Highlight[];
+    heroImage?: {
+      url?: string;
+    };
   };
   about?: {
     title?: string;
@@ -143,7 +147,20 @@ export default async function Home() {
               )}
             </div>
             <div className="hidden h-full md:block">
-              <div className="relative h-72 w-full rounded-3xl bg-gradient-to-br from-blue-600 via-sky-400 to-emerald-400 shadow-xl" />
+              {hero.heroImage?.url ? (
+                <div className="relative h-72 w-full overflow-hidden rounded-3xl shadow-xl">
+                  <Image
+                    src={hero.heroImage.url}
+                    alt={hero.title ?? "Imagem da escola"}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 400px, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="relative h-72 w-full rounded-3xl bg-gradient-to-br from-blue-600 via-sky-400 to-emerald-400 shadow-xl" />
+              )}
             </div>
           </section>
         )}
