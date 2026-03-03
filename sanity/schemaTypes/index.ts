@@ -6,9 +6,13 @@ import testimonialsSection from './sections/testimonialsSection'
 import structureSection from './sections/structureSection'
 import contactSection from './sections/contactSection'
 import pageHome from './pages/pageHome'
+import siteSettings from './siteSettings'
+import newsPost from './newsPost'
 
 export const schemaTypes = [
+  siteSettings,
   pageHome,
+  newsPost,
   heroSection,
   aboutSection,
   segmentsSection,

@@ -12,8 +12,14 @@ export const revalidate = 0;
 type Highlight = { label?: string | null };
 
 type HomePageData = {
-  title?: string;
-  hero?: {
+  settings?: {
+    title?: string;
+    tagline?: string;
+    logo?: { url?: string };
+  };
+  page?: {
+    title?: string;
+    hero?: {
     eyebrow?: string;
     title?: string;
     subtitle?: string;
@@ -28,59 +34,67 @@ type HomePageData = {
     heroVideo?: {
       url?: string;
     };
-  };
-  about?: {
-    title?: string;
-    subtitle?: string;
-    mission?: string;
-    vision?: string;
-    values?: string[];
-    highlightStats?: { label?: string; value?: string }[];
-    image?: { url?: string };
-  };
-  segments?: {
-    title?: string;
-    subtitle?: string;
+    };
+    about?: {
+      title?: string;
+      subtitle?: string;
+      mission?: string;
+      vision?: string;
+      values?: string[];
+      highlightStats?: { label?: string; value?: string }[];
+      image?: { url?: string };
+    };
     segments?: {
-      name?: string;
-      ageRange?: string;
-      description?: string;
-      highlights?: string[];
-      icon?: { url?: string };
-    }[];
-  };
-  differentiators?: {
-    title?: string;
-    subtitle?: string;
-    items?: { title?: string; description?: string }[];
-  };
-  testimonials?: {
-    title?: string;
-    subtitle?: string;
+      title?: string;
+      subtitle?: string;
+      segments?: {
+        name?: string;
+        ageRange?: string;
+        description?: string;
+        highlights?: string[];
+        icon?: { url?: string };
+      }[];
+    };
+    differentiators?: {
+      title?: string;
+      subtitle?: string;
+      items?: { title?: string; description?: string }[];
+    };
     testimonials?: {
-      name?: string;
-      role?: string;
-      content?: string;
-      avatar?: { url?: string };
-    }[];
+      title?: string;
+      subtitle?: string;
+      testimonials?: {
+        name?: string;
+        role?: string;
+        content?: string;
+        avatar?: { url?: string };
+      }[];
+    };
+    structure?: {
+      title?: string;
+      subtitle?: string;
+      description?: string;
+      items?: { title?: string; description?: string; image?: { url?: string } }[];
+    };
+    contact?: {
+      title?: string;
+      subtitle?: string;
+      phone?: string;
+      whatsapp?: string;
+      email?: string;
+      address?: string;
+      mapsUrl?: string;
+      openingHours?: string;
+      formIntro?: string;
+    };
   };
-  structure?: {
+  news?: {
     title?: string;
-    subtitle?: string;
-    description?: string;
-    items?: { title?: string; description?: string; image?: { url?: string } }[];
-  };
-  contact?: {
-    title?: string;
-    subtitle?: string;
-    phone?: string;
-    whatsapp?: string;
-    email?: string;
-    address?: string;
-    mapsUrl?: string;
-    openingHours?: string;
-    formIntro?: string;
-  };
+    slug?: string;
+    excerpt?: string;
+    publishedAt?: string;
+    coverImage?: {url?: string};
+  }[];
 };
 
 async function getHomePageData(): Promise<HomePageData | null> {
@@ -101,8 +115,15 @@ export default async function Home() {
     );
   }
 
-  const { hero, about, segments, differentiators, testimonials, structure, contact } =
-    data;
+  const { settings, page } = data;
+  const hero = page?.hero;
+  const about = page?.about;
+  const segments = page?.segments;
+  const differentiators = page?.differentiators;
+  const testimonials = page?.testimonials;
+  const structure = page?.structure;
+  const contact = page?.contact;
+  const news = data.news;
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-slate-900">
@@ -111,15 +132,27 @@ export default async function Home() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:max-w-7xl lg:px-12">
           {/* Marca */}
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xs font-semibold">
-              VH
-            </div>
+            {settings?.logo?.url ? (
+              <div className="relative h-9 w-9 overflow-hidden rounded-full bg-white/15 ring-1 ring-white/40">
+                <Image
+                  src={settings.logo.url}
+                  alt={settings.title ?? 'Logo da escola'}
+                  fill
+                  sizes="36px"
+                  className="object-contain p-1.5"
+                />
+              </div>
+            ) : (
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xs font-semibold">
+                VH
+              </div>
+            )}
             <div className="leading-tight">
               <p className="text-sm font-semibold tracking-wide">
-                Colégio Horizonte
+                {settings?.title ?? 'Colégio Horizonte'}
               </p>
               <p className="text-[11px] uppercase tracking-[0.18em] text-white/80">
-                Educação Infantil · Fundamental · Médio
+                {settings?.tagline ?? 'Educação Infantil · Fundamental · Médio'}
               </p>
             </div>
           </div>
@@ -374,15 +407,15 @@ export default async function Home() {
                     key={idx}
                     className="flex h-full flex-col gap-4 border-none bg-white px-5 py-5 shadow-sm ring-1 ring-slate-100"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center gap-3 text-center">
                       {segment.icon?.url && (
-                        <div className="relative mt-1 h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-[#f0f7e6] ring-1 ring-[#8bc53f]/30">
+                        <div className="relative h-24 w-24 overflow-hidden">
                           <Image
                             src={segment.icon.url}
                             alt={segment.name ?? "Segmento"}
                             fill
-                            sizes="48px"
-                            className="object-contain p-2"
+                            sizes="96px"
+                            className="object-contain"
                           />
                         </div>
                       )}
@@ -453,6 +486,64 @@ export default async function Home() {
                   )}
                 </Card>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Notícias / Blog */}
+        {news && news.length > 0 && (
+          <section
+            id="news"
+            className="rounded-3xl bg-white/90 px-4 py-10 shadow-sm ring-1 ring-black/5 sm:px-6 lg:px-10"
+          >
+            <div className="mx-auto max-w-6xl space-y-6">
+              <SectionHeader
+                title="Notícias"
+                subtitle="Acompanhe as novidades, eventos e comunicados do Colégio Horizonte."
+              />
+              <div className="grid gap-6 md:grid-cols-3">
+                {news.map((post, idx) => (
+                  <Card
+                    key={post.slug ?? idx}
+                    className="flex h-full flex-col overflow-hidden border-none bg-white shadow-sm ring-1 ring-slate-100"
+                  >
+                    {post.coverImage?.url && (
+                      <div className="relative h-32 w-full sm:h-36">
+                        <Image
+                          src={post.coverImage.url}
+                          alt={post.title ?? 'Notícia'}
+                          fill
+                          sizes="(min-width: 1024px) 260px, 100vw"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col gap-2 p-4">
+                      {post.publishedAt && (
+                        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+                          {new Date(post.publishedAt).toLocaleDateString('pt-BR')}
+                        </p>
+                      )}
+                      <h3 className="line-clamp-2 text-sm font-semibold text-slate-900">
+                        {post.title}
+                      </h3>
+                      {post.excerpt && (
+                        <p className="line-clamp-3 text-xs text-slate-600">
+                          {post.excerpt}
+                        </p>
+                      )}
+                      <div className="mt-auto pt-2">
+                        <Link
+                          href="#"
+                          className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1c75bb] hover:text-[#155792]"
+                        >
+                          Ler mais
+                        </Link>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
           </section>
         )}
@@ -564,7 +655,10 @@ export default async function Home() {
 
         {/* Contato */}
         {contact && (
-          <section className="grid gap-10 border-t border-slate-200 pt-10 md:grid-cols-[1.4fr,1.6fr]">
+          <section
+            id="contact"
+            className="grid gap-10 border-t border-slate-200 pt-10 md:grid-cols-[1.4fr,1.6fr]"
+          >
             <div className="space-y-6">
               {contact.title && (
                 <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
@@ -702,6 +796,11 @@ export default async function Home() {
 
       </main>
 
+      {/* Botão flutuante de WhatsApp */}
+      {contact?.whatsapp && (
+        <FloatingWhatsAppButton phone={contact.whatsapp} />
+      )}
+
       {/* Footer com dados vindos do Sanity (contato) */}
       <footer className="mt-8 border-t border-black/5 bg-[#171717] text-slate-200">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 sm:px-8 lg:max-w-7xl lg:flex-row lg:items-start lg:justify-between lg:px-12">
@@ -769,4 +868,39 @@ export default async function Home() {
     </div>
   );
 }
+
+type FloatingWhatsAppButtonProps = {
+  phone: string;
+};
+
+function FloatingWhatsAppButton({phone}: FloatingWhatsAppButtonProps) {
+  const digits = phone.replace(/\D/g, '');
+  if (!digits) return null;
+
+  const url = `https://wa.me/${digits}`;
+
+  return (
+    <div className="pointer-events-none fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/20 transition hover:bg-[#1ebe5a] sm:h-14 sm:w-14"
+        aria-label="Fale conosco pelo WhatsApp"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          className="h-6 w-6"
+        >
+          <path
+            fill="currentColor"
+            d="M16.04 4C9.94 4 5 8.94 5 15.02c0 2.06.54 3.96 1.5 5.62L5 27l6.54-1.48A10.87 10.87 0 0 0 16.04 26C22.12 26 27 21.06 27 15.02 27 8.94 22.12 4 16.04 4Zm0 2.13c4.87 0 8.83 3.96 8.83 8.9c0 4.9-3.96 8.86-8.83 8.86c-1.72 0-3.33-.5-4.69-1.38l-.34-.21l-3.88.88l.83-3.78l-.22-.39A8.74 8.74 0 0 1 7.2 15c0-4.94 3.96-8.87 8.84-8.87Zm-4.23 3.9c-.22 0-.57.08-.87.38c-.3.3-1.14 1.1-1.14 2.67c0 1.57 1.17 3.09 1.34 3.3c.17.22 2.3 3.64 5.7 4.96c2.82 1.11 3.4.9 4.02.84c.62-.06 1.98-.81 2.26-1.6c.28-.79.28-1.47.2-1.6c-.08-.13-.32-.22-.67-.38c-.35-.17-2.07-1.02-2.39-1.14c-.32-.11-.55-.17-.79.17c-.24.34-.9 1.14-1.1 1.38c-.2.24-.41.26-.76.09c-.35-.17-1.48-.55-2.82-1.76c-1.04-.93-1.75-2.07-1.96-2.42c-.2-.34-.02-.53.15-.7c.15-.15.35-.41.52-.62c.17-.21.22-.36.33-.6c.11-.24.06-.45-.03-.62c-.09-.17-.79-1.93-1.08-2.64c-.28-.67-.56-.72-.79-.73Z"
+          />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
 
