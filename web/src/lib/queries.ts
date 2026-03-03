@@ -1,0 +1,84 @@
+export const homePageQuery = `
+*[_type == "pageHome" && slug.current == "home"][0]{
+  title,
+  seoTitle,
+  seoDescription,
+  hero->{
+    eyebrow,
+    title,
+    subtitle,
+    primaryCtaLabel,
+    primaryCtaHref,
+    secondaryCtaLabel,
+    secondaryCtaHref,
+    highlights[] {
+      label
+    }
+  },
+  about->{
+    title,
+    subtitle,
+    mission,
+    vision,
+    values,
+    "content": content[]{
+      ...,
+      _type == "block" => {
+        ...
+      }
+    },
+    highlightStats[]{
+      label,
+      value
+    }
+  },
+  segments->{
+    title,
+    subtitle,
+    segments[]{
+      name,
+      ageRange,
+      description,
+      highlights
+    }
+  },
+  differentiators->{
+    title,
+    subtitle,
+    items[]{
+      title,
+      description
+    }
+  },
+  testimonials->{
+    title,
+    subtitle,
+    testimonials[]{
+      name,
+      role,
+      content
+    }
+  },
+  structure->{
+    title,
+    subtitle,
+    description,
+    items[]{
+      title,
+      description
+    }
+  },
+  contact->{
+    title,
+    subtitle,
+    phone,
+    whatsapp,
+    email,
+    address,
+    mapsUrl,
+    openingHours,
+    formIntro
+  }
+}
+`;
+
