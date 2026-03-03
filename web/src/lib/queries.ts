@@ -26,6 +26,9 @@ export const homePageQuery = `
     mission,
     vision,
     values,
+    image{
+      "url": asset->url
+    },
     "content": content[]{
       ...,
       _type == "block" => {
@@ -44,7 +47,10 @@ export const homePageQuery = `
       name,
       ageRange,
       description,
-      highlights
+      highlights,
+      icon{
+        "url": asset->url
+      }
     }
   },
   differentiators->{
@@ -61,7 +67,10 @@ export const homePageQuery = `
     testimonials[]{
       name,
       role,
-      content
+      content,
+      avatar{
+        "url": asset->url
+      }
     }
   },
   structure->{
@@ -70,7 +79,10 @@ export const homePageQuery = `
     description,
     items[]{
       title,
-      description
+      description,
+      image{
+        "url": asset->url
+      }
     }
   },
   contact->{

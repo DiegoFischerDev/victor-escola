@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "../lib/sanityClient";
 import { homePageQuery } from "../lib/queries";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card } from "../components/ui/card";
+import { SectionHeader } from "../components/ui/section-header";
 
 export const revalidate = 0;
 
@@ -29,6 +33,7 @@ type HomePageData = {
     vision?: string;
     values?: string[];
     highlightStats?: { label?: string; value?: string }[];
+    image?: { url?: string };
   };
   segments?: {
     title?: string;
@@ -38,6 +43,7 @@ type HomePageData = {
       ageRange?: string;
       description?: string;
       highlights?: string[];
+      icon?: { url?: string };
     }[];
   };
   differentiators?: {
@@ -48,13 +54,18 @@ type HomePageData = {
   testimonials?: {
     title?: string;
     subtitle?: string;
-    testimonials?: { name?: string; role?: string; content?: string }[];
+    testimonials?: {
+      name?: string;
+      role?: string;
+      content?: string;
+      avatar?: { url?: string };
+    }[];
   };
   structure?: {
     title?: string;
     subtitle?: string;
     description?: string;
-    items?: { title?: string; description?: string }[];
+    items?: { title?: string; description?: string; image?: { url?: string } }[];
   };
   contact?: {
     title?: string;
@@ -91,114 +102,129 @@ export default async function Home() {
     data;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 py-8 sm:px-8 lg:max-w-7xl lg:px-12 lg:py-12">
-        {/* Top bar / branding */}
-        <header className="mb-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-sm font-semibold text-white shadow-sm">
+    <div className="min-h-screen bg-[#f5f5f5] text-slate-900">
+      {/* Header fixo com paleta verde/bege inspirada no site modelo */}
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#8dc044] text-white shadow-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:max-w-7xl lg:px-12">
+          {/* Marca */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xs font-semibold">
               VH
             </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-900">
+            <div className="leading-tight">
+              <p className="text-sm font-semibold tracking-wide">
                 Colégio Horizonte
               </p>
-              <p className="text-xs text-slate-500">
-                Educação Infantil ao Ensino Médio
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/80">
+                Educação Infantil · Fundamental · Médio
               </p>
             </div>
           </div>
-          <div className="hidden items-center gap-4 text-xs font-medium text-slate-600 sm:flex">
-            <Link href="#segments" className="hover:text-slate-900">
-              Segmentos
+
+          {/* Navegação principal */}
+          <nav className="hidden items-center gap-4 text-[12px] font-medium uppercase tracking-[0.12em] sm:flex">
+            <Link
+              href="#hero"
+              className="rounded-full bg-[#cbbba0] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b]"
+            >
+              Início
             </Link>
-            <Link href="#differentials" className="hover:text-slate-900">
-              Diferenciais
+            <Link href="#about" className="px-3 py-1.5 hover:text-[#3b3b3b]">
+              Colégio
             </Link>
-            <Link href="#structure" className="hover:text-slate-900">
-              Estrutura
+            <Link
+              href="#segments"
+              className="px-3 py-1.5 hover:text-[#3b3b3b]"
+            >
+              Ensino
+            </Link>
+            <Link
+              href="#differentials"
+              className="px-3 py-1.5 hover:text-[#3b3b3b]"
+            >
+              Projetos
             </Link>
             <Link
               href="#contact"
-              className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-800"
+              className="px-3 py-1.5 hover:text-[#3b3b3b]"
             >
-              Fale conosco
+              Contactos
             </Link>
+          </nav>
+
+          {/* CTA à direita */}
+          <div className="hidden sm:flex">
+            <Button
+              asChild
+              className="rounded-full border-0 bg-[#cbbba0] px-4 py-1.5 text-xs font-semibold text-[#3b3b3b] hover:bg-[#afa085]"
+            >
+              <Link href="#contact">Agende uma visita</Link>
+            </Button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Hero */}
+      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 pb-16 pt-8 sm:px-8 lg:max-w-7xl lg:px-12">
+        {/* Hero tipo “page title” com imagem de fundo clara e textos escuros */}
         {hero && (
-          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-10 text-slate-50 shadow-xl sm:px-10 sm:py-14 lg:px-14">
-            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_top,_#38bdf8_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#22c55e_0,_transparent_55%)] opacity-70 md:block" />
+          <section
+            id="hero"
+            className="relative overflow-hidden rounded-3xl border border-black/5 bg-white/40 text-slate-900"
+          >
+            {hero.heroImage?.url && (
+              <div className="pointer-events-none absolute inset-0 -z-10">
+                <Image
+                  src={hero.heroImage.url}
+                  alt={hero.title ?? "Imagem da escola"}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover object-center"
+                />
+              </div>
+            )}
 
-            <div className="relative grid gap-10 md:grid-cols-[3fr,2fr] md:items-center">
-              <div className="space-y-7">
-              {hero.eyebrow && (
-                  <p className="inline-flex rounded-full bg-slate-800/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-300 ring-1 ring-slate-700/80">
-                  {hero.eyebrow}
-                </p>
-              )}
-              {hero.title && (
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-white">
-                  {hero.title}
-                </h1>
-              )}
-              {hero.subtitle && (
-                  <p className="max-w-xl text-base sm:text-lg leading-relaxed text-slate-200/80">
-                  {hero.subtitle}
-                </p>
-              )}
-                <div className="flex flex-wrap gap-4">
-                {hero.primaryCtaLabel && hero.primaryCtaHref && (
-                  <Link
-                    href={hero.primaryCtaHref}
-                      className="inline-flex items-center justify-center rounded-full bg-sky-400 px-7 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-sky-300"
-                  >
-                    {hero.primaryCtaLabel}
-                  </Link>
+            <div className="relative px-6 py-16 sm:px-10 md:px-16">
+              <div className="max-w-3xl">
+                {hero.eyebrow && (
+                  <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-[#cbbba0]">
+                    {hero.eyebrow}
+                  </p>
                 )}
-                {hero.secondaryCtaLabel && hero.secondaryCtaHref && (
-                  <Link
-                    href={hero.secondaryCtaHref}
-                      className="inline-flex items-center justify-center rounded-full border border-slate-500/70 px-6 py-3 text-sm font-medium text-slate-100 bg-slate-900/40 backdrop-blur-sm transition hover:border-slate-300"
-                  >
-                    {hero.secondaryCtaLabel}
-                  </Link>
+                {hero.title && (
+                  <h1 className="text-3xl font-normal tracking-[0.05em] text-slate-900 sm:text-4xl lg:text-[44px] lg:leading-[1.2]">
+                    {hero.title}
+                  </h1>
                 )}
-              </div>
-              {hero.highlights && hero.highlights.length > 0 && (
-                  <div className="mt-5 grid gap-3 text-xs sm:grid-cols-2">
-                  {hero.highlights
-                    .filter((h) => h?.label)
-                    .map((h, idx) => (
-                      <div
-                        key={idx}
-                          className="flex items-start gap-2 rounded-xl bg-slate-800/70 px-3 py-2 text-slate-100 ring-1 ring-slate-700/70"
-                      >
-                          <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-400" />
-                        <span>{h?.label}</span>
-                      </div>
-                    ))}
+                {hero.subtitle && (
+                  <p className="mt-3 text-sm leading-relaxed text-slate-800 sm:text-base">
+                    {hero.subtitle}
+                  </p>
+                )}
+
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  {hero.primaryCtaLabel && hero.primaryCtaHref && (
+                    <Button
+                      asChild
+                      className="rounded-none bg-[#cbbba0] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#3b3b3b] hover:bg-[#afa085]"
+                    >
+                      <Link href={hero.primaryCtaHref}>
+                        {hero.primaryCtaLabel}
+                      </Link>
+                    </Button>
+                  )}
+                  {hero.secondaryCtaLabel && hero.secondaryCtaHref && (
+                    <Button
+                      asChild
+                      variant="secondary"
+                      className="rounded-none border border-slate-800/60 bg-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-900 hover:bg-black/5"
+                    >
+                      <Link href={hero.secondaryCtaHref}>
+                        {hero.secondaryCtaLabel}
+                      </Link>
+                    </Button>
+                  )}
                 </div>
-              )}
-              </div>
-              <div className="hidden h-full md:block">
-              {hero.heroImage?.url ? (
-                  <div className="relative h-80 w-full overflow-hidden rounded-3xl border border-slate-700/60 bg-slate-900/60 shadow-2xl backdrop-blur">
-                  <Image
-                    src={hero.heroImage.url}
-                    alt={hero.title ?? "Imagem da escola"}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 400px, 100vw"
-                      className="object-cover object-center"
-                  />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-                  </div>
-              ) : (
-                  <div className="relative h-80 w-full rounded-3xl bg-gradient-to-br from-sky-500 via-sky-400 to-emerald-400 shadow-2xl" />
-              )}
               </div>
             </div>
           </section>
@@ -208,17 +234,10 @@ export default async function Home() {
         {about && (
           <section
             id="about"
-            className="grid gap-10 rounded-3xl bg-white px-6 py-8 shadow-sm ring-1 ring-slate-100 md:grid-cols-2 sm:px-8 lg:px-10"
+            className="grid gap-10 rounded-3xl bg-slate-50 px-6 py-8 shadow-sm ring-1 ring-slate-100 md:grid-cols-[1.4fr,1.6fr] sm:px-8 lg:px-10"
           >
             <div className="space-y-4">
-              {about.title && (
-                <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
-                  {about.title}
-                </h2>
-              )}
-              {about.subtitle && (
-                <p className="text-base text-slate-600">{about.subtitle}</p>
-              )}
+              <SectionHeader title={about.title} subtitle={about.subtitle} />
               <div className="mt-4 space-y-2 text-sm text-slate-700">
                 {about.mission && (
                   <p>
@@ -241,6 +260,18 @@ export default async function Home() {
               </div>
             </div>
             <div className="space-y-6">
+              {/* Imagem da seção sobre */}
+              {about.image?.url && (
+                <div className="relative h-56 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm sm:h-64">
+                  <Image
+                    src={about.image.url}
+                    alt={about.title ?? "Sobre a escola"}
+                    fill
+                    sizes="(min-width: 1024px) 420px, 100vw"
+                    className="object-cover object-center"
+                  />
+                </div>
+              )}
               {about.highlightStats && about.highlightStats.length > 0 && (
                 <div className="grid grid-cols-2 gap-4 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-3">
                   {about.highlightStats.map((stat, idx) => (
@@ -257,50 +288,51 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Segmentos */}
+        {/* Segmentos – grade de ciclos inspirada na seção “Ensino” */}
         {segments && (
-          <section id="segments" className="space-y-6">
-            {segments.title && (
-              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
-                {segments.title}
-              </h2>
-            )}
-            {segments.subtitle && (
-              <p className="max-w-2xl text-sm sm:text-base text-slate-600">
-                {segments.subtitle}
-              </p>
-            )}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {segments.segments?.map((segment, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm"
-                >
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-                      {segment.ageRange}
-                    </p>
-                    <h3 className="text-base sm:text-lg font-semibold text-slate-900">
+          <section id="segments" className="rounded-3xl bg-white/90 px-4 py-10 shadow-sm ring-1 ring-black/5 sm:px-6">
+            <div className="mx-auto max-w-5xl">
+              <SectionHeader
+                title={segments.title}
+                subtitle={segments.subtitle}
+              />
+
+              <div className="mt-10 flex flex-wrap justify-center gap-8">
+                {/* colunas centrais com segmentos */}
+                {segments.segments?.map((segment, idx) => (
+                  <div
+                    key={idx}
+                    className="flex w-full max-w-xs flex-col items-center text-center sm:w-1/2 lg:w-1/5"
+                  >
+                    {segment.icon?.url && (
+                      <div className="mb-4 h-16 w-16">
+                        <Image
+                          src={segment.icon.url}
+                          alt={segment.name ?? "Segmento"}
+                          width={64}
+                          height={64}
+                          className="mx-auto h-full w-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8dc044]">
                       {segment.name}
                     </h3>
+                    {segment.description && (
+                      <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                        {segment.description}
+                      </p>
+                    )}
+                    {segment.highlights && segment.highlights.length > 0 && (
+                      <ul className="mt-2 space-y-1 text-xs text-slate-600">
+                        {segment.highlights.map((h, i) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-                  {segment.description && (
-                    <p className="text-xs sm:text-sm text-slate-600">
-                      {segment.description}
-                    </p>
-                  )}
-                  {segment.highlights && segment.highlights.length > 0 && (
-                    <ul className="mt-2 space-y-1 text-xs text-slate-700">
-                      {segment.highlights.map((h, i) => (
-                        <li key={i} className="flex gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
         )}
@@ -358,16 +390,36 @@ export default async function Home() {
               {testimonials.testimonials?.map((t, idx) => (
                 <figure
                   key={idx}
-                  className="flex h-full flex-col justify-between rounded-2xl bg-white p-5 shadow-sm"
+                  className="flex h-full flex-col justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100"
                 >
+                  <div className="flex items-start gap-3">
+                    {t.avatar?.url && (
+                      <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-slate-100">
+                        <Image
+                          src={t.avatar.url}
+                          alt={t.name ?? "Pessoa"}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {t.name}
+                      </p>
+                      {t.role && (
+                        <p className="text-[11px] text-slate-500">{t.role}</p>
+                      )}
+                    </div>
+                  </div>
                   {t.content && (
-                    <blockquote className="text-sm text-slate-700">
+                    <blockquote className="mt-3 text-sm text-slate-700">
                       “{t.content}”
                     </blockquote>
                   )}
-                  <figcaption className="mt-4 text-xs text-slate-600">
-                    <p className="font-semibold text-slate-900">{t.name}</p>
-                    {t.role && <p>{t.role}</p>}
+                  <figcaption className="mt-3 text-[11px] text-slate-400">
+                    Família do Colégio Horizonte
                   </figcaption>
                 </figure>
               ))}
@@ -397,16 +449,29 @@ export default async function Home() {
               {structure.items?.map((item, idx) => (
                 <div
                   key={idx}
-                  className="rounded-2xl bg-white p-4 shadow-sm border border-slate-100"
+                  className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100"
                 >
-                  <h3 className="text-sm font-semibold text-slate-900">
-                    {item.title}
-                  </h3>
-                  {item.description && (
-                    <p className="mt-2 text-xs text-slate-600">
-                      {item.description}
-                    </p>
+                  {item.image?.url && (
+                    <div className="relative h-32 w-full">
+                      <Image
+                        src={item.image.url}
+                        alt={item.title ?? "Ambiente escolar"}
+                        fill
+                        sizes="(min-width: 1024px) 260px, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
                   )}
+                  <div className="space-y-1 p-4">
+                    <h3 className="text-sm font-semibold text-slate-900">
+                      {item.title}
+                    </h3>
+                    {item.description && (
+                      <p className="mt-1 text-xs text-slate-600">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
