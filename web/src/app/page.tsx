@@ -2,6 +2,8 @@ import Link from "next/link";
 import { sanityClient } from "../lib/sanityClient";
 import { homePageQuery } from "../lib/queries";
 
+export const revalidate = 0;
+
 type Highlight = { label?: string | null };
 
 type HomePageData = {
