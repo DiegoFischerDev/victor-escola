@@ -92,31 +92,68 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 py-12 sm:px-8 lg:px-12 lg:py-16">
+      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 py-8 sm:px-8 lg:max-w-7xl lg:px-12 lg:py-12">
+        {/* Top bar / branding */}
+        <header className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-sm font-semibold text-white shadow-sm">
+              VH
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                Colégio Horizonte
+              </p>
+              <p className="text-xs text-slate-500">
+                Educação Infantil ao Ensino Médio
+              </p>
+            </div>
+          </div>
+          <div className="hidden items-center gap-4 text-xs font-medium text-slate-600 sm:flex">
+            <Link href="#segments" className="hover:text-slate-900">
+              Segmentos
+            </Link>
+            <Link href="#differentials" className="hover:text-slate-900">
+              Diferenciais
+            </Link>
+            <Link href="#structure" className="hover:text-slate-900">
+              Estrutura
+            </Link>
+            <Link
+              href="#contact"
+              className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-800"
+            >
+              Fale conosco
+            </Link>
+          </div>
+        </header>
+
         {/* Hero */}
         {hero && (
-          <section className="grid gap-10 md:grid-cols-[3fr,2fr] items-center">
-            <div className="space-y-6">
+          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-10 text-slate-50 shadow-xl sm:px-10 sm:py-14 lg:px-14">
+            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_top,_#38bdf8_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#22c55e_0,_transparent_55%)] opacity-70 md:block" />
+
+            <div className="relative grid gap-10 md:grid-cols-[3fr,2fr] md:items-center">
+              <div className="space-y-7">
               {hero.eyebrow && (
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+                  <p className="inline-flex rounded-full bg-slate-800/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-300 ring-1 ring-slate-700/80">
                   {hero.eyebrow}
                 </p>
               )}
               {hero.title && (
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-slate-900">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-white">
                   {hero.title}
                 </h1>
               )}
               {hero.subtitle && (
-                <p className="text-base sm:text-lg leading-relaxed text-slate-600 max-w-xl">
+                  <p className="max-w-xl text-base sm:text-lg leading-relaxed text-slate-200/80">
                   {hero.subtitle}
                 </p>
               )}
-              <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-4">
                 {hero.primaryCtaLabel && hero.primaryCtaHref && (
                   <Link
                     href={hero.primaryCtaHref}
-                    className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+                      className="inline-flex items-center justify-center rounded-full bg-sky-400 px-7 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-sky-300"
                   >
                     {hero.primaryCtaLabel}
                   </Link>
@@ -124,50 +161,55 @@ export default async function Home() {
                 {hero.secondaryCtaLabel && hero.secondaryCtaHref && (
                   <Link
                     href={hero.secondaryCtaHref}
-                    className="inline-flex items-center justify-center rounded-full border border-slate-300 px-6 py-3 text-sm font-medium text-slate-800 bg-white/80 backdrop-blur-sm transition hover:border-slate-400"
+                      className="inline-flex items-center justify-center rounded-full border border-slate-500/70 px-6 py-3 text-sm font-medium text-slate-100 bg-slate-900/40 backdrop-blur-sm transition hover:border-slate-300"
                   >
                     {hero.secondaryCtaLabel}
                   </Link>
                 )}
               </div>
               {hero.highlights && hero.highlights.length > 0 && (
-                <div className="mt-6 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
+                  <div className="mt-5 grid gap-3 text-xs sm:grid-cols-2">
                   {hero.highlights
                     .filter((h) => h?.label)
                     .map((h, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start gap-2 rounded-xl bg-white/70 px-3 py-2 shadow-sm"
+                          className="flex items-start gap-2 rounded-xl bg-slate-800/70 px-3 py-2 text-slate-100 ring-1 ring-slate-700/70"
                       >
-                        <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                          <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-400" />
                         <span>{h?.label}</span>
                       </div>
                     ))}
                 </div>
               )}
-            </div>
-            <div className="hidden h-full md:block">
+              </div>
+              <div className="hidden h-full md:block">
               {hero.heroImage?.url ? (
-                <div className="relative h-72 w-full overflow-hidden rounded-3xl shadow-xl">
+                  <div className="relative h-80 w-full overflow-hidden rounded-3xl border border-slate-700/60 bg-slate-900/60 shadow-2xl backdrop-blur">
                   <Image
                     src={hero.heroImage.url}
                     alt={hero.title ?? "Imagem da escola"}
                     fill
                     priority
                     sizes="(min-width: 1024px) 400px, 100vw"
-                    className="object-cover"
+                      className="object-cover object-center"
                   />
-                </div>
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                  </div>
               ) : (
-                <div className="relative h-72 w-full rounded-3xl bg-gradient-to-br from-blue-600 via-sky-400 to-emerald-400 shadow-xl" />
+                  <div className="relative h-80 w-full rounded-3xl bg-gradient-to-br from-sky-500 via-sky-400 to-emerald-400 shadow-2xl" />
               )}
+              </div>
             </div>
           </section>
         )}
 
         {/* Sobre */}
         {about && (
-          <section className="grid gap-10 md:grid-cols-2 items-start">
+          <section
+            id="about"
+            className="grid gap-10 rounded-3xl bg-white px-6 py-8 shadow-sm ring-1 ring-slate-100 md:grid-cols-2 sm:px-8 lg:px-10"
+          >
             <div className="space-y-4">
               {about.title && (
                 <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
@@ -217,7 +259,7 @@ export default async function Home() {
 
         {/* Segmentos */}
         {segments && (
-          <section className="space-y-6">
+          <section id="segments" className="space-y-6">
             {segments.title && (
               <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
                 {segments.title}
@@ -265,14 +307,17 @@ export default async function Home() {
 
         {/* Diferenciais */}
         {differentiators && (
-          <section className="space-y-6">
+          <section
+            id="differentials"
+            className="space-y-6 rounded-3xl bg-slate-900 px-6 py-8 text-slate-50 shadow-sm sm:px-8 lg:px-10"
+          >
             {differentiators.title && (
-              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
+              <h2 className="text-2xl sm:text-3xl font-semibold">
                 {differentiators.title}
               </h2>
             )}
             {differentiators.subtitle && (
-              <p className="max-w-2xl text-sm sm:text-base text-slate-600">
+              <p className="max-w-2xl text-sm sm:text-base text-slate-200/80">
                 {differentiators.subtitle}
               </p>
             )}
@@ -280,13 +325,13 @@ export default async function Home() {
               {differentiators.items?.map((item, idx) => (
                 <div
                   key={idx}
-                  className="rounded-2xl bg-white p-5 shadow-sm border border-slate-100"
+                  className="rounded-2xl border border-slate-700/80 bg-slate-900/40 p-5 shadow-sm backdrop-blur-sm"
                 >
-                  <h3 className="text-base sm:text-lg font-semibold text-slate-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-slate-50">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="mt-2 text-sm text-slate-600">
+                    <p className="mt-2 text-sm text-slate-200/80">
                       {item.description}
                     </p>
                   )}
@@ -332,7 +377,7 @@ export default async function Home() {
 
         {/* Estrutura */}
         {structure && (
-          <section className="space-y-6">
+          <section id="structure" className="space-y-6">
             {structure.title && (
               <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
                 {structure.title}
