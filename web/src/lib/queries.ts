@@ -1,5 +1,5 @@
 export const homePageQuery = `
-*[_type == "pageHome" && slug.current == "home"][0]{
+*[_type == "pageHome"][0]{
   title,
   seoTitle,
   seoDescription,
