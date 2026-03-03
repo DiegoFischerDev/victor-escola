@@ -1,6 +1,8 @@
 export const homePageQuery = `
 *[_type == "pageHome"][0]{
+  _id,
   title,
+  "heroRef": hero,
   seoTitle,
   seoDescription,
   hero->{
